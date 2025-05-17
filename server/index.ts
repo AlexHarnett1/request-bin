@@ -2,6 +2,7 @@ import express, { Request, Response } from 'express';
 import * as ngrok from 'ngrok';
 import * as path from 'path';
 import router from './src/routes';
+import { initPostgres } from './src/database/sql';
 
 const app = express();
 app.use(express.json());
@@ -22,9 +23,15 @@ app.get(/.*/, (req: Request, res: Response) => {
   }
 })
 
-app.listen(PORT, async () => {
+async function startServer() {
+  await initPostgres()
+
+  app.listen(PORT, async () => {
   console.log(`Server running on port ${PORT}`);
 
   const url = await ngrok.connect({ addr: 3000 });
   console.log(`Ngrok tunnel available at: ${url}`);
 });
+}
+
+startServer()

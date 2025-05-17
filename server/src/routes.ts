@@ -1,8 +1,8 @@
 import { Request, Response } from "express";
-import pool from './database/sql';
+import { pool } from './database/sql';
 import { QueryResult } from 'pg';
 import { db } from './database/mongo';
-import Hashids = require('hashids');
+import Hashids from 'hashids';
 import { ObjectId } from 'mongodb';
 import { FrontFacingTub, SQLTubRequest, FrontFacingTubRequest, DeletedRequestRow } from "./types";
 import { DeleteResult } from 'mongodb';
@@ -134,7 +134,7 @@ router.delete('/api/requests/:request_id', async (req: Request, res: Response): 
 // Delete a tub
 router.delete('/api/tubs/:id', async (req: Request, res: Response): Promise<void> => {
   const tubId = req.params.id;
-  const internalTubId = decodeEncodedId(tubId)
+  const internalTubId = decodeEncodedId(tubId);
 
   try {
     const resultTubs = await pool.query(`DELETE FROM tubs WHERE id=$1`, [internalTubId]);
@@ -213,4 +213,4 @@ router.all('/receive/:id', async (req: Request, res: Response) => {
   }
 });
 
-export default router
+export default router;
