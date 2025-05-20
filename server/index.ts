@@ -9,8 +9,9 @@ app.use(express.json());
 app.use('/', router)
 
 const PORT = 3000;
+const isDev = process.env.NODE_ENV === 'development';
 
-const CLIENT_DIST_PATH = path.join(__dirname, '..', 'client', 'dist');
+const CLIENT_DIST_PATH = isDev ? path.join(__dirname, '..', 'client', 'dist') : path.join(__dirname, '..', '..', 'client', 'dist');
 const CLIENT_INDEX_PATH = path.join(CLIENT_DIST_PATH, 'index.html')
 app.use(express.static(CLIENT_DIST_PATH));
 
@@ -29,8 +30,11 @@ async function startServer() {
   app.listen(PORT, async () => {
   console.log(`Server running on port ${PORT}`);
 
-  const url = await ngrok.connect({ addr: 3000 });
-  console.log(`Ngrok tunnel available at: ${url}`);
+  if (isDev) {
+    console.log(`Loading Ngrok tunnel . . .`);
+    const url = await ngrok.connect({ addr: 3000 });
+    console.log(`Ngrok tunnel available at: ${url}`);
+  }
 });
 }
 
